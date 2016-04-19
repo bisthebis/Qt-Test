@@ -16,7 +16,7 @@ public:
     ~Widget();
 
 private slots:
-    void on_checkBox_clicked();
+    void on_pushButton_clicked();
 
 private:
     Ui::Widget *ui;

@@ -13,7 +13,9 @@ Widget::~Widget()
     delete ui;
 }
 
-void Widget::on_checkBox_clicked()
+
+void Widget::on_pushButton_clicked()
 {
-    this->findChild<QAbstractButton*>("checkBox")->setText("Click");
+    this->findChild<QPushButton*>("pushButton")->setText("Click");
+    qApp->aboutQt();
 }
