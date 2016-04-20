@@ -4,17 +4,19 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = pureQtTest
 TEMPLATE = app
 
+CONFIG += c++14
 
 SOURCES += main.cpp\
-        widget.cpp
+    widgetopengl.cpp
 
-HEADERS  += widget.h
+HEADERS  += \
+    widgetopengl.h
 
 FORMS    += widget.ui
