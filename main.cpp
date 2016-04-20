@@ -1,4 +1,3 @@
-#include "OpenGLWindow.h"
 #include "widgetopengl.h"
 
 #include <QtGui/QGuiApplication>
@@ -24,6 +23,14 @@ int main(int argc, char **argv)
     window.setLayout(layout);
 
     WidgetOpenGL* GL = new WidgetOpenGL(nullptr);
+
+    QSurfaceFormat format;
+    format.setDepthBufferSize(24);
+    format.setStencilBufferSize(8);
+    format.setVersion(2, 0);
+    format.setProfile(QSurfaceFormat::CoreProfile);
+    GL->setFormat(format);
+
     GL->resize(500,500);
     layout->addWidget(GL);
 

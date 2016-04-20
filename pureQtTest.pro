@@ -19,4 +19,3 @@ SOURCES += main.cpp\
 HEADERS  += \
     widgetopengl.h
 
-FORMS    += widget.ui
