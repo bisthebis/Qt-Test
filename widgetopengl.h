@@ -11,6 +11,7 @@ class WidgetOpenGL : public QOpenGLWidget, protected QOpenGLFunctions
 
     public:
         WidgetOpenGL(QWidget* parent = nullptr);
+        virtual ~WidgetOpenGL(){}
 
     protected:
         void initializeGL();

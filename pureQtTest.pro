@@ -14,8 +14,10 @@ TEMPLATE = app
 CONFIG += c++14
 
 SOURCES += main.cpp\
-    widgetopengl.cpp
+    widgetopengl.cpp \
+    basicsurface.cpp
 
 HEADERS  += \
-    widgetopengl.h
+    widgetopengl.h \
+    basicsurface.h
 

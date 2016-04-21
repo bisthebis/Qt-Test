@@ -1,4 +1,5 @@
 #include "widgetopengl.h"
+#include "basicsurface.h"
 
 #include <QtGui/QGuiApplication>
 #include <QApplication>
@@ -12,6 +13,12 @@
 
 #include <QtCore/qmath.h>
 
+#include <iostream>
+
+using std::cerr;
+using std::cout;
+using std::endl;
+
 
 int main(int argc, char **argv)
 {
@@ -22,21 +29,41 @@ int main(int argc, char **argv)
     auto layout = new QBoxLayout(QBoxLayout::TopToBottom);
     window.setLayout(layout);
 
-    WidgetOpenGL* GL = new WidgetOpenGL(nullptr);
+    auto GL = new BasicSurface(nullptr);
 
     QSurfaceFormat format;
     format.setDepthBufferSize(24);
     format.setStencilBufferSize(8);
-    format.setVersion(2, 0);
+    format.setVersion(3, 3);
+    format.setRenderableType(QSurfaceFormat::RenderableType::OpenGL);
     format.setProfile(QSurfaceFormat::CoreProfile);
     GL->setFormat(format);
+
+
 
     GL->resize(500,500);
     layout->addWidget(GL);
 
-    auto bouton = new QPushButton();
-    bouton->setText("Salut !");
-    layout->addWidget(bouton);
+    auto slider = new QSlider(Qt::Orientation::Horizontal);
+    slider->setMinimum(0);
+    slider->setMaximum(255);
+    slider->setObjectName("redSlider");
+    layout->addWidget(slider);
+
+    slider = new QSlider(Qt::Orientation::Horizontal);
+    slider->setMinimum(0);
+    slider->setMaximum(255);
+    slider->setObjectName("greenSlider");
+    layout->addWidget(slider);
+
+    slider = new QSlider(Qt::Orientation::Horizontal);
+    slider->setMinimum(0);
+    slider->setMaximum(255);
+    slider->setObjectName("blueSlider");
+    layout->addWidget(slider);
+
+
+    GL->init();
 
     window.show();
 
