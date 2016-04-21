@@ -30,6 +30,7 @@ class BasicSurface : public WidgetOpenGL
         void setRed(int v) {red = v;}
         void setGreen(int v) {green = v;}
         void setBlue(int v) {blue = v;}
+        void updateShader();
 
     private:
         QOpenGLShaderProgram program;

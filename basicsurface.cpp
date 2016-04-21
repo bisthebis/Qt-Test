@@ -27,6 +27,20 @@ void BasicSurface::init()
     QObject::connect(curSlider, SIGNAL(valueChanged(int)), this, SLOT(setBlue(int)));
     QObject::connect(curSlider, SIGNAL(valueChanged(int)), this, SLOT(update(void)));
 
+    QTextEdit* text = parent()->findChild<QTextEdit*>("fragText");
+    QObject::connect(text, SIGNAL(textChanged()), this, SLOT(updateShader()));
+
+}
+
+void BasicSurface::updateShader()
+{
+    QTextEdit* text = parent()->findChild<QTextEdit*>("fragText");
+    QString frag = text->toPlainText();
+    program.removeAllShaders();
+    program.addShaderFromSourceCode(QOpenGLShader::Vertex, "#version 330 core \n in vec2 pos; void main() {gl_Position = vec4(pos, 0.0, 1.0);}");
+    program.addShaderFromSourceCode(QOpenGLShader::Fragment, frag);
+    program.link();
+    program.bind();
 }
 
 void BasicSurface::initializeGL()
@@ -55,9 +69,10 @@ void BasicSurface::initializeGL()
 
     if(!program.addShaderFromSourceCode(QOpenGLShader::Vertex, "#version 330 core \n in vec2 pos; void main() {gl_Position = vec4(pos, 0.0, 1.0);}"))
         exit(EXIT_FAILURE);
-
+    /*
     if(!program.addShaderFromSourceCode(QOpenGLShader::Fragment, "#version 330 core \n  uniform vec3 Color; out vec4 outColor; void main() {outColor = vec4(Color,1);}"))
-        exit(EXIT_FAILURE);
+        exit(EXIT_FAILURE);*/
+    if(!program.addShaderFromSourceFile(QOpenGLShader::Fragment, "base.frag"))
 
 
     ///glBindFragDataLocation(program.programId(), 0, "outColor");
@@ -79,11 +94,14 @@ void BasicSurface::paintGL()
 
 
     // On affiche le triangle
+    program.bind();
     program.setUniformValue("Color", QVector3D((float)red/255, (float)green/255, (float)blue/255));
 
     VAO.bind();
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     VAO.release();
+
+    program.release();
 
     GLenum err;
         while ((err = glGetError()) != GL_NO_ERROR) {

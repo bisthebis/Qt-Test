@@ -10,6 +10,7 @@
 #include <QBoxLayout>
 #include <QtGui>
 #include <QtWidgets>
+#include <QFile>
 
 #include <QtCore/qmath.h>
 
@@ -61,6 +62,20 @@ int main(int argc, char **argv)
     slider->setMaximum(255);
     slider->setObjectName("blueSlider");
     layout->addWidget(slider);
+
+    QTextEdit* block = new QTextEdit();
+    QString frag;
+    {
+        QFile file("base.frag");
+        file.open(QIODevice::ReadOnly | QIODevice::Text);
+        frag = file.readAll();
+    }
+
+
+    block->setText(frag);
+    block->setFixedHeight(200);
+    block->setObjectName("fragText");
+    layout->addWidget(block);
 
 
     GL->init();
