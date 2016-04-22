@@ -15,9 +15,14 @@ CONFIG += c++14
 
 SOURCES += main.cpp\
     widgetopengl.cpp \
-    basicsurface.cpp
+    basicsurface.cpp \
+    mainwindow.cpp
 
 HEADERS  += \
     widgetopengl.h \
-    basicsurface.h
+    basicsurface.h \
+    mainwindow.h
+
+FORMS += \
+    mainwindow.ui
 

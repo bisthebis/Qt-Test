@@ -15,29 +15,73 @@ BasicSurface::BasicSurface(QWidget* parent) : WidgetOpenGL(parent)
 
 void BasicSurface::init()
 {
-    QSlider* curSlider = parent()->findChild<QSlider*>("redSlider");
-    QObject::connect(curSlider, SIGNAL(valueChanged(int)), this, SLOT(setRed(int)));
-    QObject::connect(curSlider, SIGNAL(valueChanged(int)), this, SLOT(update(void)));
+    QSlider* curSlider = window()->findChild<QSlider*>("redSlider");
+    if(!curSlider)
+        cout << "No red";
+    else
+    {
+        QObject::connect(curSlider, SIGNAL(valueChanged(int)), this, SLOT(setRed(int)));
+        QObject::connect(curSlider, SIGNAL(valueChanged(int)), this, SLOT(update(void)));
+        curSlider->setValue(127);
+    }
 
-    curSlider = parent()->findChild<QSlider*>("greenSlider");
-    QObject::connect(curSlider, SIGNAL(valueChanged(int)), this, SLOT(setGreen(int)));
-    QObject::connect(curSlider, SIGNAL(valueChanged(int)), this, SLOT(update(void)));
+    curSlider = window()->findChild<QSlider*>("greenSlider");
+    if(!curSlider)
+        cout << "No green";
+    else
+    {
+        QObject::connect(curSlider, SIGNAL(valueChanged(int)), this, SLOT(setGreen(int)));
+        QObject::connect(curSlider, SIGNAL(valueChanged(int)), this, SLOT(update(void)));
+        curSlider->setValue(127);
+    }
 
-    curSlider = parent()->findChild<QSlider*>("blueSlider");
-    QObject::connect(curSlider, SIGNAL(valueChanged(int)), this, SLOT(setBlue(int)));
-    QObject::connect(curSlider, SIGNAL(valueChanged(int)), this, SLOT(update(void)));
 
-    QTextEdit* text = parent()->findChild<QTextEdit*>("fragText");
+    curSlider = window()->findChild<QSlider*>("blueSlider");
+    if(!curSlider)
+        cout << "No blue";
+    else
+    {
+        QObject::connect(curSlider, SIGNAL(valueChanged(int)), this, SLOT(setBlue(int)));
+        QObject::connect(curSlider, SIGNAL(valueChanged(int)), this, SLOT(update(void)));
+        curSlider->setValue(127);
+    }
+
+    //Initializing shaders texboxes BEFORE connecting
+    //*
+    {
+        QString frag;
+        QFile file("base.frag");
+        file.open(QIODevice::ReadOnly | QIODevice::Text);
+        frag = file.readAll();
+        window()->findChild<QTextEdit*>("fragText")->setText(frag);
+    }
+    {
+        QString vert;
+        QFile file("base.vert");
+        file.open(QIODevice::ReadOnly | QIODevice::Text);
+        vert = file.readAll();
+        window()->findChild<QTextEdit*>("vertText")->setText(vert);
+    }
+
+    //Now, connect
+    QTextEdit* text = window()->findChild<QTextEdit*>("fragText");
     QObject::connect(text, SIGNAL(textChanged()), this, SLOT(updateShader()));
+    text = window()->findChild<QTextEdit*>("vertText");
+    QObject::connect(text, SIGNAL(textChanged()), this, SLOT(updateShader()));
+
+
+
 
 }
 
 void BasicSurface::updateShader()
 {
-    QTextEdit* text = parent()->findChild<QTextEdit*>("fragText");
+    QTextEdit* text = window()->findChild<QTextEdit*>("fragText");
     QString frag = text->toPlainText();
+    text = window()->findChild<QTextEdit*>("vertText");
+    QString vert = text->toPlainText();
     program.removeAllShaders();
-    program.addShaderFromSourceCode(QOpenGLShader::Vertex, "#version 330 core \n in vec2 pos; void main() {gl_Position = vec4(pos, 0.0, 1.0);}");
+    program.addShaderFromSourceCode(QOpenGLShader::Vertex, vert);
     program.addShaderFromSourceCode(QOpenGLShader::Fragment, frag);
     program.link();
     program.bind();
@@ -47,6 +91,8 @@ void BasicSurface::initializeGL()
 {
     initializeOpenGLFunctions();
     glClearColor(0.0f, 0.5f, 1.0f, 1.0f);
+
+
 
     float vertices[] = {0.0, 0.5,  -0.5, -0.5,  0.5, -0.5,   0, -1};
 
