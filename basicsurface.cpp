@@ -50,14 +50,14 @@ void BasicSurface::init()
     //*
     {
         QString frag;
-        QFile file("base.frag");
+        QFile file("../Qt-Test/base.frag");
         file.open(QIODevice::ReadOnly | QIODevice::Text);
         frag = file.readAll();
         window()->findChild<QTextEdit*>("fragText")->setText(frag);
     }
     {
         QString vert;
-        QFile file("base.vert");
+        QFile file("../Qt-Test/base.vert");
         file.open(QIODevice::ReadOnly | QIODevice::Text);
         vert = file.readAll();
         window()->findChild<QTextEdit*>("vertText")->setText(vert);
@@ -68,6 +68,8 @@ void BasicSurface::init()
     QObject::connect(text, SIGNAL(textChanged()), this, SLOT(updateShader()));
     text = window()->findChild<QTextEdit*>("vertText");
     QObject::connect(text, SIGNAL(textChanged()), this, SLOT(updateShader()));
+
+    updateShader();
 
 
 
@@ -89,12 +91,14 @@ void BasicSurface::updateShader()
 
 void BasicSurface::initializeGL()
 {
+
     initializeOpenGLFunctions();
+    init();
     glClearColor(0.0f, 0.5f, 1.0f, 1.0f);
 
 
 
-    float vertices[] = {0.0, 0.5,  -0.5, -0.5,  0.5, -0.5,   0, -1};
+    float vertices[] = {0.0, 0.5, 0,  -0.5, -0.5, 0,  0.5, -0.5,   0, -1, 0};
 
     VAO.create();
     VAO.bind();
@@ -104,26 +108,13 @@ void BasicSurface::initializeGL()
     VBO.allocate(&vertices, sizeof(vertices));
 
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     VAO.release();
 
-
-
-    if(!program.addShaderFromSourceCode(QOpenGLShader::Vertex, "#version 330 core \n in vec2 pos; void main() {gl_Position = vec4(pos, 0.0, 1.0);}"))
-        exit(EXIT_FAILURE);
-    /*
-    if(!program.addShaderFromSourceCode(QOpenGLShader::Fragment, "#version 330 core \n  uniform vec3 Color; out vec4 outColor; void main() {outColor = vec4(Color,1);}"))
-        exit(EXIT_FAILURE);*/
-    if(!program.addShaderFromSourceFile(QOpenGLShader::Fragment, "base.frag"))
-
-
-    ///glBindFragDataLocation(program.programId(), 0, "outColor");
-    program.link();
-    program.bind();
 
 
     glEnable(GL_DEPTH_TEST);

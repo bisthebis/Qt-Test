@@ -9,7 +9,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     /* Init OpenGL Widget */
     auto GL = findChild<BasicSurface*>("OpenGL");
-    GL->init();
     QSurfaceFormat format;
     format.setDepthBufferSize(24);
     format.setStencilBufferSize(8);
