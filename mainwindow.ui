@@ -51,7 +51,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -63,7 +63,7 @@
        <x>20</x>
        <y>20</y>
        <width>161</width>
-       <height>201</height>
+       <height>225</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
@@ -226,7 +226,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QTextEdit" name="fragText">
+       <widget class="QTextEdit" name="vertText">
         <property name="maximumSize">
          <size>
           <width>300</width>
@@ -236,7 +236,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QTextEdit" name="vertText">
+       <widget class="QTextEdit" name="fragText">
         <property name="maximumSize">
          <size>
           <width>300</width>
@@ -271,7 +271,7 @@
        <x>9</x>
        <y>19</y>
        <width>111</width>
-       <height>111</height>
+       <height>136</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -311,7 +311,7 @@
        <x>140</x>
        <y>20</y>
        <width>111</width>
-       <height>111</height>
+       <height>136</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_4">
