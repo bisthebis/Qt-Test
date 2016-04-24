@@ -27,6 +27,8 @@ int main(int argc, char **argv)
     MainWindow mainWin;
     mainWin.show();
 
+
+
     return app.exec();
 }
 

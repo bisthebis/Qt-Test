@@ -8,89 +8,16 @@ using std::endl;
 
 
 
-BasicSurface::BasicSurface(QWidget* parent) : QOpenGLWidget(parent)
-{
+BasicSurface::BasicSurface(QWidget* parent) : QOpenGLWidget(parent), camera(this){
+    camera.setObjectName("Camera");
+    camera.setEye(QVector3D(3,3,3));
+    camera.setTarget(QVector3D(0,0,0));
+
+    connect(&camera, SIGNAL(valueChanged()), this, SLOT(update()));
 
 
 }
 
-void BasicSurface::init()
-{
-    QSlider* curSlider = window()->findChild<QSlider*>("redSlider");
-    if(!curSlider)
-        cout << "No red";
-    else
-    {
-        connect(curSlider, SIGNAL(valueChanged(int)), this, SLOT(setRed(int)));
-        connect(curSlider, SIGNAL(valueChanged(int)), this, SLOT(update(void)));
-        curSlider->setValue(127);
-    }
-
-    curSlider = window()->findChild<QSlider*>("greenSlider");
-    if(!curSlider)
-        cout << "No green";
-    else
-    {
-        connect(curSlider, SIGNAL(valueChanged(int)), this, SLOT(setGreen(int)));
-        connect(curSlider, SIGNAL(valueChanged(int)), this, SLOT(update(void)));
-        curSlider->setValue(127);
-    }
-
-
-    curSlider = window()->findChild<QSlider*>("blueSlider");
-    if(!curSlider)
-        cout << "No blue";
-    else
-    {
-        connect(curSlider, SIGNAL(valueChanged(int)), this, SLOT(setBlue(int)));
-        connect(curSlider, SIGNAL(valueChanged(int)), this, SLOT(update(void)));
-        curSlider->setValue(127);
-    }
-
-    curSlider = window()->findChild<QSlider*>("frustrumSlider");
-    if(!curSlider)
-        cout << "No frustrum slider";
-    else
-    {
-        connect(curSlider, SIGNAL(valueChanged(int)), this, SLOT(setFrustrumSize(int)));
-        connect(curSlider, SIGNAL(valueChanged(int)), this, SLOT(update(void)));
-        curSlider->setValue(10);
-    }
-
-    //Initializing shaders texboxes BEFORE connecting
-    //*
-    {
-        QString frag;
-        QFile file("../Qt-Test/base.frag");
-        file.open(QIODevice::ReadOnly | QIODevice::Text);
-        frag = file.readAll();
-        window()->findChild<QTextEdit*>("fragText")->setText(frag);
-    }
-    {
-        QString vert;
-        QFile file("../Qt-Test/base.vert");
-        file.open(QIODevice::ReadOnly | QIODevice::Text);
-        vert = file.readAll();
-        window()->findChild<QTextEdit*>("vertText")->setText(vert);
-    }
-
-    //Now, connect
-    QTextEdit* text = window()->findChild<QTextEdit*>("fragText");
-    connect(text, SIGNAL(textChanged()), this, SLOT(updateShader()));
-    text = window()->findChild<QTextEdit*>("vertText");
-    connect(text, SIGNAL(textChanged()), this, SLOT(updateShader()));
-
-    connect(window()->findChild<QPushButton*>("shaderLoadButton"), SIGNAL(clicked(bool)), this, SLOT(reloadShader())); ///Reload shaders forme files
-
-
-
-
-    updateShader();
-
-
-
-
-}
 
 void BasicSurface::updateShader()
 {
@@ -130,11 +57,10 @@ void BasicSurface::initializeGL()
 {
 
     initializeOpenGLFunctions();
-    init();
     glClearColor(0.0f, 0.5f, 1.0f, 1.0f);
 
 
-
+    updateShader();
     float vertices[] = {0.0, 0.5, 0,  -0.5, -0.5, 0,  0.5, -0.5, 0,    /*colors*/ 1.0, 0.0, 0.0,  0.0, 1.0, 0.0,  0.0, 0.0, 1.0};
 
     VAO.create();
@@ -174,6 +100,9 @@ void BasicSurface::paintGL()
     program.bind();
     program.setUniformValue("Color", QVector3D((float)red/255, (float)green/255, (float)blue/255));
     program.setUniformValue("projection", projection);
+    program.setUniformValue("view", camera.get());
+
+
 
     VAO.bind();
     glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -203,7 +132,10 @@ void BasicSurface::resizeGL(int width, int height)
 void BasicSurface::recomputeProjection()
 {
     projection.setToIdentity();
-    projection.ortho(-frustrumSize, frustrumSize, -frustrumSize, frustrumSize, -1.0f, 10.0f);
+    if(window()->findChild<QCheckBox*>("isOrthographic")->isChecked())
+        projection.ortho(-frustrumSize, frustrumSize, -frustrumSize, frustrumSize, 1.0f, 10.0f);
+    else
+        projection.perspective(FoV, 1.0, 1.0f, 100.0f);
 }
 
 BasicSurface::~BasicSurface()

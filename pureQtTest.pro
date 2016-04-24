@@ -15,11 +15,13 @@ CONFIG += c++14
 
 SOURCES += main.cpp\
     basicsurface.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    camera.cpp
 
 HEADERS  += \
     basicsurface.h \
-    mainwindow.h
+    mainwindow.h \
+    camera.h
 
 FORMS += \
     mainwindow.ui

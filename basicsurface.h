@@ -11,6 +11,7 @@
 #include <QtWidgets>
 #include <QtMath>
 
+#include "camera.h"
 
 class BasicSurface : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -18,7 +19,6 @@ class BasicSurface : public QOpenGLWidget, protected QOpenGLFunctions
     public:
         BasicSurface(QWidget* parent = nullptr);
         virtual ~BasicSurface();
-        void init();
 
     protected:
         void initializeGL();
@@ -33,21 +33,28 @@ class BasicSurface : public QOpenGLWidget, protected QOpenGLFunctions
         void setRed(int v) {red = v;}
         void setGreen(int v) {green = v;}
         void setBlue(int v) {blue = v;}
-        void setFrustrumSize(int v) {frustrumSize = float(v)/10.0f; recomputeProjection();}
+        void setFrustrumSize(int v) {frustrumSize = double(v)/10.0f; recomputeProjection(); window()->findChild<QCheckBox*>("isOrthographic")->setChecked(true);}
+        void setFieldOfView(int v) {FoV = double(v); recomputeProjection(); window()->findChild<QCheckBox*>("isOrthographic")->setChecked(false);}
         void updateShader();
         void reloadShader();
 
     private slots:
         void recomputeProjection();
 
+
     private:
         QOpenGLShaderProgram program;
         QOpenGLVertexArrayObject VAO;
         QOpenGLBuffer VBO;
         QMatrix4x4 projection;
-        float frustrumSize = 2.0f;
-        QMatrix4x4 camera;
+
+            float frustrumSize = 2.0f;
+            float FoV = 60.0f;
+
+
         unsigned char red, green, blue;
+
+        Camera camera;
 };
 
 #endif // BASICSURFACE_H
