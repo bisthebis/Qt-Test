@@ -1,7 +1,7 @@
 #ifndef BASICSURFACE_H
 #define BASICSURFACE_H
 
-#include "widgetopengl.h"
+
 
 #include <QOpenGLShader>
 #include <QOpenGLShaderProgram>
@@ -9,8 +9,10 @@
 #include <QtOpenGL>
 #include <QtGui>
 #include <QtWidgets>
+#include <QtMath>
 
-class BasicSurface : public WidgetOpenGL
+
+class BasicSurface : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
     public:
@@ -26,16 +28,25 @@ class BasicSurface : public WidgetOpenGL
 
     signals:
 
+
     public slots:
         void setRed(int v) {red = v;}
         void setGreen(int v) {green = v;}
         void setBlue(int v) {blue = v;}
+        void setFrustrumSize(int v) {frustrumSize = float(v)/10.0f; recomputeProjection();}
         void updateShader();
+        void reloadShader();
+
+    private slots:
+        void recomputeProjection();
 
     private:
         QOpenGLShaderProgram program;
         QOpenGLVertexArrayObject VAO;
         QOpenGLBuffer VBO;
+        QMatrix4x4 projection;
+        float frustrumSize = 2.0f;
+        QMatrix4x4 camera;
         unsigned char red, green, blue;
 };
 

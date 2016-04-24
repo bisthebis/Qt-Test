@@ -1,5 +1,3 @@
-#include "widgetopengl.h"
-#include "basicsurface.h"
 #include "mainwindow.h"
 
 #include <QtGui/QGuiApplication>
@@ -25,7 +23,7 @@ using std::endl;
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
-
+    cout << sizeof(QObject) << endl;
     MainWindow mainWin;
     mainWin.show();
 
