@@ -8,7 +8,7 @@ using std::endl;
 
 
 
-BasicSurface::BasicSurface(QWidget* parent) : QOpenGLWidget(parent), camera(this){
+BasicSurface::BasicSurface(QWidget* parent) : QOpenGLWidget(parent), camera(this), texture(QOpenGLTexture::Target2D) {
     camera.setObjectName("Camera");
     camera.setEye(QVector3D(3,3,3));
     camera.setTarget(QVector3D(0,0,0));
@@ -58,10 +58,10 @@ void BasicSurface::initializeGL()
 
     initializeOpenGLFunctions();
     glClearColor(0.0f, 0.5f, 1.0f, 1.0f);
-
+    texture.setData(QImage("../Qt-Test/cat.png"));
 
     updateShader();
-    float vertices[] = {0.0, 0.5, 0,  -0.5, -0.5, 0,  0.5, -0.5, 0,    /*colors*/ 1.0, 0.0, 0.0,  0.0, 1.0, 0.0,  0.0, 0.0, 1.0};
+    float vertices[] = {0.0, 0.5, 0,  -0.5, -0.5, 0,  0.5, -0.5, 0,    /*colors*/ 1.0, 0.0, 0.0,  0.0, 1.0, 0.0,  0.0, 0.0, 1.0, /*UVs*/ 0.5, 1.0,  0,0, 1,0};
 
     VAO.create();
     VAO.bind();
@@ -76,6 +76,9 @@ void BasicSurface::initializeGL()
 
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)(9*sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)(15*sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -105,6 +108,7 @@ void BasicSurface::paintGL()
 
 
     VAO.bind();
+    texture.bind();
     glDrawArrays(GL_TRIANGLES, 0, 3);
     VAO.release();
 

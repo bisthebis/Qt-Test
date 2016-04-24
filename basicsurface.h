@@ -55,6 +55,8 @@ class BasicSurface : public QOpenGLWidget, protected QOpenGLFunctions
         unsigned char red, green, blue;
 
         Camera camera;
+
+        QOpenGLTexture texture;
 };
 
 #endif // BASICSURFACE_H
